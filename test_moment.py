@@ -120,7 +120,7 @@ result_file = open('result.csv', 'w', newline='')
 result_writer = csv.writer(result_file)
 
 
-data_folder = "data/Moments_in_Time_256x256_30fps/validation/"
+# data_folder = "data/Moments_in_Time_256x256_30fps/validation/"
 for label in os.listdir(args.data_folder):
     print(label)
     directory = os.path.join(args.data_folder,label)
