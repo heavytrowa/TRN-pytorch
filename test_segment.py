@@ -11,6 +11,7 @@ import subprocess
 import numpy as np
 from PIL import Image
 import moviepy.editor as mpy
+from moviepy.video.io.VideoFileClip import VideoFileClip
 import csv
 import json
 
@@ -20,6 +21,7 @@ import torch.optim
 from models import TSN
 import transforms
 from torch.nn import functional as F
+
 
 
 def extract_frames(video_file, num_frames=8):
@@ -117,19 +119,32 @@ transform = torchvision.transforms.Compose([
     transforms.GroupNormalize(net.input_mean, net.input_std),
 ])
 
+# data_folder = "data/Moments_in_Time_256x256_30fps/validation/"
+
+ff_res = subprocess.run(["ffprobe", "-v", "error", "-show_entries",
+                         "format=duration", "-of",
+                         "default=noprint_wrappers=1:nokey=1", args.video_file],
+                         stdout=subprocess.PIPE,
+                         stderr=subprocess.STDOUT)
+video_length = float(ff_res.stdout)
+index = categories.index("slipping")
+
+duration = 1.0
+fps = 1./30
+pivot = 0.
+
 result = {}
 result["slipping"] = []
 
-# data_folder = "data/Moments_in_Time_256x256_30fps/validation/"
+while pivot + 1 < video_length:
+    print(pivot, pivot+1)
+    with VideoFileClip(args.video_file) as video:
+        new = video.subclip(pivot, pivot+1)
+        new.write_videofile("ss.mp4", audio_codec='aac')
+    frames = extract_frames("ss.mp4", args.test_segments)
 
-video_file = extract_frames(args.video_file, args.test_segments)
-index = categories.index("slipping")
-
-duration = 30
-for i in range(0,len(video_file)-duration+2):
-    cur_frames = frames[i:i+duration]
     # Make video prediction.
-    data = transform(cur_frames)
+    data = transform(frames)
     input = data.view(-1, 3, data.size(1), data.size(2)).unsqueeze(0).cuda()
 
     with torch.no_grad():
@@ -139,7 +154,10 @@ for i in range(0,len(video_file)-duration+2):
 
     # Output the prediction.
 
-    result["slipping"].append([float(i)/30, h_x[index]])
+    result["slipping"].append([pivot, h_x[index].item()])
+    # print(result)
+
+    pivot += fps
 
 with open('timeline.json', 'w') as outfile:
     json.dump(result, outfile)
