@@ -127,14 +127,14 @@ ff_res = subprocess.run(["ffprobe", "-v", "error", "-show_entries",
                          stdout=subprocess.PIPE,
                          stderr=subprocess.STDOUT)
 video_length = float(ff_res.stdout)
-index = categories.index("slipping")
+index = categories.index("crawling")
 
 duration = 1.0
 fps = 1./30
 pivot = 0.
 
 result = {}
-result["slipping"] = []
+result["crawling"] = []
 
 while pivot + 1 < video_length:
     print(pivot, pivot+1)
@@ -154,7 +154,7 @@ while pivot + 1 < video_length:
 
     # Output the prediction.
 
-    result["slipping"].append([pivot, h_x[index].item()])
+    result["crawling"].append([pivot, h_x[index].item()])
     # print(result)
 
     pivot += fps
