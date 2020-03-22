@@ -11,7 +11,9 @@ import subprocess
 import numpy as np
 from PIL import Image
 import moviepy.editor as mpy
+from moviepy.video.io.VideoFileClip import VideoFileClip
 import csv
+import json
 
 import torchvision
 import torch.nn.parallel
@@ -19,6 +21,7 @@ import torch.optim
 from models import TSN
 import transforms
 from torch.nn import functional as F
+
 
 
 def extract_frames(video_file, num_frames=8):
@@ -73,7 +76,7 @@ def render_frames(frames, prediction):
 
 # options
 parser = argparse.ArgumentParser(description="test TRN on a single video")
-parser.add_argument('--data_folder', type=str, default=None)
+parser.add_argument('--video_file', type=str, default=None)
 parser.add_argument('--modality', type=str, default='RGB',
                     choices=['RGB', 'Flow', 'RGBDiff'], )
 parser.add_argument('--dataset', type=str, default='moments',
@@ -116,49 +119,45 @@ transform = torchvision.transforms.Compose([
     transforms.GroupNormalize(net.input_mean, net.input_std),
 ])
 
-result_file = open('result.csv', 'w', newline='')
-result_writer = csv.writer(result_file)
-
-
 # data_folder = "data/Moments_in_Time_256x256_30fps/validation/"
-for label in os.listdir(args.data_folder):
-    print(label)
-    directory = os.path.join(args.data_folder,label)
-    for video_file in os.listdir(directory):
-        print(video_file, "," ,label)
-        print('Extracting frames using ffmpeg...')
-        try:
-            frames = extract_frames(os.path.join(directory,video_file), args.test_segments)
-        except:
-            continue
 
-        # Make video prediction.
-        data = transform(frames)
-        input = data.view(-1, 3, data.size(1), data.size(2)).unsqueeze(0).cuda()
+ff_res = subprocess.run(["ffprobe", "-v", "error", "-show_entries",
+                         "format=duration", "-of",
+                         "default=noprint_wrappers=1:nokey=1", args.video_file],
+                         stdout=subprocess.PIPE,
+                         stderr=subprocess.STDOUT)
+video_length = float(ff_res.stdout)
+index = categories.index("slipping")
 
-        with torch.no_grad():
-            logits = net(input)
-            h_x = torch.mean(F.softmax(logits, 1), dim=0).data
-            probs, idx = h_x.sort(0, True)
+duration = 1.0
+fps = 1./30
+pivot = 0.
 
-        # Output the prediction.
-        video_name = video_file
-        # print('RESULT ON ' + video_name)
+result = {}
+result["slipping"] = []
 
-        row_ls = [video_name, label]
-        for i in range(0, 5):
-            # print('{:.3f} -> {}'.format(probs[i], categories[idx[i]]))
-            row_ls.append(probs[i].item())
-            row_ls.append(categories[idx[i]])
+while pivot + 1 < video_length:
+    print(pivot, pivot+1)
+    with VideoFileClip(args.video_file) as video:
+        new = video.subclip(pivot, pivot+1)
+        new.write_videofile("ss.mp4", audio_codec='aac')
+    frames = extract_frames("ss.mp4", args.test_segments)
 
-        result_writer.writerow(row_ls)
+    # Make video prediction.
+    data = transform(frames)
+    input = data.view(-1, 3, data.size(1), data.size(2)).unsqueeze(0).cuda()
 
-        # # Render output frames with prediction text.
-        # if args.rendered_output is not None:
-        #     prediction = categories[idx[0]]
-        #     rendered_frames = render_frames(frames, prediction)
-        #     clip = mpy.ImageSequenceClip(rendered_frames, fps=4)
-        #     clip.write_videofile(args.rendered_output)
-    ckpt = open("ckpt_"+label+".csv", 'w', newline='')
-    ckpt.close()
-result_file.close()
+    with torch.no_grad():
+        logits = net(input)
+        h_x = torch.mean(F.softmax(logits, 1), dim=0).data
+        # probs, idx = h_x.sort(0, True)
+
+    # Output the prediction.
+
+    result["slipping"].append([pivot, h_x[index].item()])
+    # print(result)
+
+    pivot += fps
+
+with open('timeline.json', 'w') as outfile:
+    json.dump(result, outfile)
