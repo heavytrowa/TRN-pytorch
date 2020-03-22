@@ -4,8 +4,6 @@ import torchvision
 import torchvision.datasets as datasets
 
 
-ROOT_DATASET = 'video_datasets'
-
 
 def return_something(modality):
     filename_categories = 'something/category.txt'
@@ -82,12 +80,12 @@ def return_charades(modality):
 
 
 def return_moments(modality):
-    filename_categories = '/data/vision/oliva/scratch/moments/split/categoryList_nov17.csv'
+    filename_categories = 'pretrain/moments_categories.txt'
     if modality == 'RGB':
         prefix = '{:06d}.jpg'
-        root_data = '/data/vision/oliva/scratch/moments/moments_nov17_frames'
-        filename_imglist_train = '/data/vision/oliva/scratch/moments/split/rgb_trainingSet_nov17.csv'
-        filename_imglist_val = '/data/vision/oliva/scratch/moments/split/rgb_validationSet_nov17.csv'
+        root_data = './'
+        filename_imglist_train = './train_videofolder.txt'
+        filename_imglist_val = './val_videofolder.txt'
 
     elif modality == 'Flow':
         root_data = '/data/vision/oliva/scratch/moments/moments_nov17_flow'
@@ -107,10 +105,8 @@ def return_dataset(dataset, modality):
     else:
         raise ValueError('Unknown dataset '+dataset)
 
-    file_imglist_train = os.path.join(ROOT_DATASET, file_imglist_train)
-    file_imglist_val = os.path.join(ROOT_DATASET, file_imglist_val)
-    file_categories = os.path.join(ROOT_DATASET, file_categories)
     with open(file_categories) as f:
         lines = f.readlines()
     categories = [item.rstrip() for item in lines]
     return categories, file_imglist_train, file_imglist_val, root_data, prefix
+

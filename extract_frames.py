@@ -1,9 +1,12 @@
 import os
 import threading
 
+os.mkdir('data/frame_train')
+os.mkdir('data/frame_train/slipping')
+
 NUM_THREADS = 100
-VIDEO_ROOT = '20bn-something-something-v2'         # Downloaded webm videos
-FRAME_ROOT = '20bn-something-something-v2-frames'  # Directory for extracted frames
+VIDEO_ROOT = 'data/video_train/slipping'         # Downloaded webm videos
+FRAME_ROOT = 'data/frame_train/slipping'  # Directory for extracted frames
 
 
 def split(l, n):
