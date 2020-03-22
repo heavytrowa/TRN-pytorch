@@ -1,20 +1,20 @@
-%matplotlib inline
 import json 
 import matplotlib.pyplot as plt
-  
-# Opening JSON file 
-with open('timeline.json', 'r') as openfile: 
-    result = json.load(openfile) 
 
-time = []
-prob = []
+for i in range(1,6):
+    # Opening JSON file 
+    with open("sample"+str(i)+"_.json", 'r') as openfile: 
+        result = json.load(openfile) 
 
-for pair in result["slipping"]:
-    time.append(pair[0])
-    prob.append(pair[1])
+    time = []
+    prob = []
 
-plt.plot(time, prob, 'o-')
-plt.title('Timeline')
-plt.ylabel('Probability')
-plt.xlabel('time (sec.)')
-plt.show()
+    for pair in result["slipping"]:
+        time.append(pair[0])
+        prob.append(pair[1])
+
+    plt.plot(time, prob, 'o-')
+    plt.title("Prediction Timeline for Sample "+str(i))
+    plt.ylabel('Probability')
+    plt.xlabel('time (sec.)')
+    plt.show()
