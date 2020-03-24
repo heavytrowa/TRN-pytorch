@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 for i in range(1,6):
     # Opening JSON file 
-    with open("sample"+str(i)+"_.json", 'r') as openfile: 
+    with open("sample"+str(i)+".json", 'r') as openfile: 
         result = json.load(openfile) 
 
     time = []
