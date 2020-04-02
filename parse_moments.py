@@ -34,7 +34,7 @@ for label in os.listdir(data_folder):
 
     tmpl='%06d.jpg'
 
-    if label != "slipping":
+    if label != "crawling":
         videos = random.sample(videos,5)
 
     for i, video_file in enumerate(videos):
