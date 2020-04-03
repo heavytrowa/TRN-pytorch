@@ -144,6 +144,14 @@ class TSN(nn.Module):
         """
         super(TSN, self).train(mode)
         count = 0
+
+        # set untrainable
+        for m in self.base_model.modules():
+            if hasattr(m,'weight'):
+                m.weight.requires_grad = False
+                m.bias.requires_grad = False
+        #########
+
         if self._enable_pbn:
             print("Freezing BatchNorm2D except the first one.")
             for m in self.base_model.modules():

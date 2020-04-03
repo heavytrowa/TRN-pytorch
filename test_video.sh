@@ -2,4 +2,8 @@
 #python test_video.py --video_file sample_data/juggling.mp4 --rendered_output sample_data/predicted_video.mp4 --weight pretrain/TRN_moments_RGB_InceptionV3_TRNmultiscale_segment8_best.pth.tar --arch InceptionV3 --dataset moments
 
 # Make prediction with input a a folder name with RGB frames
+<<<<<<< HEAD
 python test_video.py --video_file sample_data/test2.mp4 --weight model/TRN_moments_RGB_InceptionV3_TRNmultiscale_segment8_checkpoint.pth.tar --arch InceptionV3 --dataset moments
+=======
+python test_video.py --video_file sample_data/test2.mp4 --weight pretrain/trained_model_freeze.pth.tar --arch InceptionV3 --dataset moments
+>>>>>>> 2178cfdd68a5e2fb20deb310cae8e3a9f871bb2b

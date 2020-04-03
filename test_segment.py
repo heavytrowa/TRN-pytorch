@@ -77,6 +77,7 @@ def render_frames(frames, prediction):
 # options
 parser = argparse.ArgumentParser(description="test TRN on a single video")
 parser.add_argument('--video_file', type=str, default=None)
+parser.add_argument('--output_file', type=str, default=None)
 parser.add_argument('--modality', type=str, default='RGB',
                     choices=['RGB', 'Flow', 'RGBDiff'], )
 parser.add_argument('--dataset', type=str, default='moments',
@@ -159,5 +160,5 @@ while pivot + 1 < video_length:
 
     pivot += fps
 
-with open('timeline.json', 'w') as outfile:
+with open(args.output_file, 'w') as outfile:
     json.dump(result, outfile)

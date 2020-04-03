@@ -20,106 +20,30 @@ Core code to implement the Temporal Relation Network module is [TRNmodule](TRNmo
 
 ### Training and Testing
 
-* The command to train single scale TRN
+* Train on moments in time dataset
 
 ```bash
-CUDA_VISIBLE_DEVICES=0,1 python main.py something RGB \
-                     --arch BNInception --num_segments 3 \
-                     --consensus_type TRN --batch-size 64
+python parse_moments.py
+./train.sh
 ```
 
-* The command to train multi-scale TRN
+* Test on moments in time dataset
 ```bash
-CUDA_VISIBLE_DEVICES=0,1 python main.py something RGB \
-                     --arch BNInception --num_segments 8 \
-                     --consensus_type TRNmultiscale --batch-size 64
+./test_moment.sh
 ```
 
-* The command to test the single scale TRN
+* Test on video (ex. sample_data/test2.mp4)
 
 ```bash
-python test_models.py something RGB model/TRN_something_RGB_BNInception_TRN_segment3_best.pth.tar \
-   --arch BNInception --crop_fusion_type TRN --test_segments 3
+./test_video.sh
 ```
 
-* The command to test the multi-scale TRN
+* Prediction timeline on video (ex. sample_data/sample1.mp4)
 
 ```bash
-python test_models.py something RGB model/TRN_something_RGB_BNInception_TRNmultiscale_segment8_best.pth.tar \
-   --arch BNInception --crop_fusion_type TRNmultiscale --test_segments 8
+./test_segment.sh
+python plot.py
 ```
-
-### Pretrained models and demo code
-
-* Download pretrained models on [Something-Something](https://20bn.com/datasets/something-something/v1), [Something-Something-V2](https://www.twentybn.com/datasets/something-something), [Jester](https://www.twentybn.com/datasets/jester), and [Moments in Time](http://moments.csail.mit.edu/)
-
-```bash
-cd pretrain
-./download_models.sh
-```
-
-* Download sample video and extracted frames. There will be mp4 video file and a folder containing the RGB frames for that video.
-
-```bash
-cd sample_data
-./download_sample_data.sh
-```
-
-The sample video is the following
-
-![result](http://relation.csail.mit.edu/data/bolei_juggling.gif)
-
-* Test pretrained model trained on Something-Something-V2
-
-```bash
-python test_video.py --arch BNInception --dataset somethingv2 \
-    --weights pretrain/TRN_somethingv2_RGB_BNInception_TRNmultiscale_segment8_best.pth.tar \
-    --frame_folder sample_data/bolei_juggling
-
-RESULT ON sample_data/bolei_juggling
-0.500 -> Throwing something in the air and catching it
-0.141 -> Throwing something in the air and letting it fall
-0.072 -> Pretending to throw something
-0.024 -> Throwing something
-0.024 -> Hitting something with something
-
-```
-
-
-* Test pretrained model trained on [Moments in Time](http://moments.csail.mit.edu/)
-
-```bash
-python test_video.py --arch InceptionV3 --dataset moments \
-    --weights pretrain/TRN_moments_RGB_InceptionV3_TRNmultiscale_segment8_best.pth.tar \
-    --frame_folder sample_data/bolei_juggling
-
-RESULT ON sample_data/bolei_juggling
-
-0.982 -> juggling
-0.003 -> flipping
-0.003 -> spinning
-0.003 -> smoking
-0.002 -> whistling
-```
-
-* Test pretrained model on mp4 video file
-
-```bash
-python test_video.py --arch InceptionV3 --dataset moments \
-    --weights pretrain/TRN_moments_RGB_InceptionV3_TRNmultiscale_segment8_best.pth.tar \
-    --video_file sample_data/bolei_juggling.mp4 --rendered_output sample_data/predicted_video.mp4
-```
-
-The command above uses `ffmpeg` to extract frames from the supplied video `--video_file` and optionally generates a new video `--rendered_output` from the frames used to make the prediction with the predicted category in the top-left corner.
-
-* Gesture recognition web-cam [demo](https://youtu.be/6PAvFzV4Yfo/) script
-python fps_dem_trn.py
-
-### TODO
-
-* TODO: Web-cam demo script
-* TODO: Visualization script
-* TODO: class-aware data augmentation
 
 ### Reference:
 B. Zhou, A. Andonian, and A. Torralba. Temporal Relational Reasoning in Videos. European Conference on Computer Vision (ECCV), 2018. [PDF](https://arxiv.org/pdf/1711.08496.pdf)
