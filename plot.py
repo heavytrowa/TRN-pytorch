@@ -20,7 +20,7 @@ plt.show()
     time = []
     prob = []
 
-    for pair in result["slipping"]:
+    for pair in result["crawling"]:
         time.append(pair[0])
         prob.append(pair[1])
 
