@@ -60,7 +60,7 @@ for label in os.listdir(data_folder):
                       f'{FRAME_ROOT}/{video_file}/{tmpl}')
             dir_files = os.listdir(curFolder)
             lists_output[1].append('%s %d %d'%(curFolder, len(dir_files), curIDX))
-
+    shutil.rmtree(directory, ignore_errors = True)
 with open(files_output[0],'w') as f:
         f.write('\n'.join(lists_output[0]))
 with open(files_output[1],'w') as f:
