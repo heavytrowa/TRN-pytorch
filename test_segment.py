@@ -137,7 +137,7 @@ pivot = 0.
 result = {}
 result["crawling"] = []
 
-while pivot + fps < video_length:
+while pivot + 1 < video_length:
     print(pivot, pivot+duration)
     with VideoFileClip(args.video_file) as video:
         new = video.subclip(pivot, pivot+1)
