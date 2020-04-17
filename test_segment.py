@@ -138,7 +138,7 @@ result = {}
 result["crawling"] = []
 
 while pivot + 1 < video_length:
-    print(pivot, pivot+1)
+    print(pivot, pivot+duration)
     with VideoFileClip(args.video_file) as video:
         new = video.subclip(pivot, pivot+1)
         new.write_videofile("ss.mp4", audio_codec='aac')
