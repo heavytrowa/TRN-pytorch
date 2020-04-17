@@ -130,8 +130,8 @@ ff_res = subprocess.run(["ffprobe", "-v", "error", "-show_entries",
 video_length = float(ff_res.stdout)
 index = categories.index("crawling")
 
-duration = 1.0
-fps = 1./30
+duration = 2.5
+fps = 3./30
 pivot = 0.
 
 result = {}
