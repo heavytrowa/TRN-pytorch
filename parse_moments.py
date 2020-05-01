@@ -22,6 +22,8 @@ split = 0.2
 
 for label in os.listdir(data_folder):
     print(label)
+    if label not in categories:
+        continue
     t_dir = os.path.join(train_dir,label)
     os.mkdir(t_dir)
     v_dir = os.path.join(valid_dir,label)
@@ -34,8 +36,7 @@ for label in os.listdir(data_folder):
 
     tmpl='%06d.jpg'
 
-    if label != "crawling":
-        videos = random.sample(videos,5)
+    videos = random.sample(videos,30)
 
     for i, video_file in enumerate(videos):
         if i < split*len(videos):
