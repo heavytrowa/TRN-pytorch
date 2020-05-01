@@ -130,15 +130,15 @@ ff_res = subprocess.run(["ffprobe", "-v", "error", "-show_entries",
 video_length = float(ff_res.stdout)
 index = categories.index("crawling")
 
-duration = 1.0
-fps = 1./30
+duration = 2.5
+fps = 3./30
 pivot = 0.
 
 result = {}
 result["crawling"] = []
 
 while pivot + 1 < video_length:
-    print(pivot, pivot+1)
+    print(pivot, pivot+duration)
     with VideoFileClip(args.video_file) as video:
         new = video.subclip(pivot, pivot+1)
         new.write_videofile("ss.mp4", audio_codec='aac')
