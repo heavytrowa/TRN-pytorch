@@ -97,7 +97,7 @@ num_class = len(categories)
 args.arch = 'InceptionV3' if args.dataset == 'moments' else 'BNInception'
 
 # Load model.
-net = TSN(num_class,
+net = TSN(339,
           args.test_segments,
           args.modality,
           base_model=args.arch,
