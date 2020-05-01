@@ -25,8 +25,7 @@ def main():
     check_rootfolders()
 
     categories, args.train_list, args.val_list, args.root_path, prefix = datasets_video.return_dataset(args.dataset, args.modality)
-    num_class = len(categories)
-
+    num_class = 339
 
     args.store_name = '_'.join(['TRN', args.dataset, args.modality, args.arch, args.consensus_type, 'segment%d'% args.num_segments])
     print('storing name: ' + args.store_name)
@@ -120,6 +119,7 @@ def main():
     if args.evaluate:
         validate(val_loader, model, criterion, 0)
         return
+    num_class = len(categories)
 
     log_training = open(os.path.join(args.root_log, '%s.csv' % args.store_name), 'w')
     for epoch in range(args.start_epoch, args.epochs):
