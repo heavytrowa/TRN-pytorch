@@ -3,7 +3,7 @@ import json
 import matplotlib.pyplot as plt
   
 # Opening JSON file 
-with open('sample1.json', 'r') as openfile: 
+with open('timeLabel.json', 'r') as openfile: 
     result = json.load(openfile) 
 
 time = []
