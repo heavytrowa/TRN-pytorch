@@ -1,1 +1,1 @@
-python test_segment.py --output_file sample1.json --video_file sample_data/testing.mp4 --weight model/bestnewmodel/TRN_moments_RGB_InceptionV3_TRNmultiscale_segment8_best.pth.tar --arch InceptionV3 --dataset moments
+python test_segment.py --output_file timeLabel.json --video_file sample_data/testing.mp4 --weight model/bestnewmodel/TRN_moments_RGB_InceptionV3_TRNmultiscale_segment8_best.pth.tar --arch InceptionV3 --dataset moments
